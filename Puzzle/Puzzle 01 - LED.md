@@ -11,7 +11,7 @@
 Raspberry Pi vs Arduino
 
 ## 브레드보드
-<!-- 어떻게 결선되어 있는지 설명하기 -->
+어떻게 결선되어 있는지 설명하기
 
 ## 저항읽기
 
@@ -21,7 +21,11 @@ Raspberry Pi vs Arduino
 LED는 다이오드이다.
 PN 접합 이야기해주자.
 
-## LED 켜기
+![](./images/01_LED_schem.ps.png)
+
+## LED 켜기 소스코드
+
+`pinmode()`, `digitalWrite()` 설명
 
 ```
 int buttonpin = 2; int LED = 11;void setup() {    pinMode(buttonpin, INPUT);    pinMode(LED, OUTPUT);
@@ -31,43 +35,17 @@ int buttonpin = 2; int LED = 11;void setup() {    pinMode(buttonpin, INPUT);
     }}
 ```
 
-## 신호등 만들기
-
-```
-int REDpin = 6;int YELLOWpin = 5; 
-int GREENpin = 4; 
-
-void setup() {    pinMode(REDpin, OUTPUT); pinMode(YELLOWpin, OUTPUT); pinMode(GREENpin, OUTPUT);}
-void loop() {    digitalWrite(REDpin, HIGH); 
-    delay(5000);
-        digitalWrite(REDpin, LOW); 
-    digitalWrite(YELLOWpin, HIGH); 
-    delay(1000);
-    
-    digitalWrite(YELLOWpin, LOW); 
-    digitalWrite(GREENpin, HIGH); 
-    delay(5000);
-    
-    digitalWrite(GREENpin, LOW);}
-```
-
-## 조도센서
-
-```
-int potpin = 0; //set analog interface #0 to connect photocell int ledpin=13;int val = 0; //define variable val
-void setup() {    pinMode(ledpin, OUTPUT); //set digital interface #11 as output
-    Serial.begin(9600);//set baud rate as 9600}
-void loop() {    val = analogRead(potpin); //read analog 
-    Serial.println(val);    delay(10);//delay 0.01 s}
-```
 ## 온도센서
+
+`analogRead()` 설명  
+아래에서 `analogRead()`를 사용한 것이 조금 이상하다.
 
 ```
 int potPin = 0; //Set analog interface #0 accessed to LM35 
 
 void setup() {    Serial.begin(9600);//Set baud rate as 9600 
 }
-void loop() {    int val;//    int dat;//define variable    val = analogRead(0); // read the analog value and assign to val 
+void loop() {    int val;//    int dat;//define variable    val = analogRead(0); // read the analog value and assign to val
     dat = (125 * val) >> 8; //temperature calculation formula 
     Serial.print("Tep:");    Serial.print(dat);//output dat value    Serial.println("C");//output character string C 
     delay(500);//delay 0.5 s}
