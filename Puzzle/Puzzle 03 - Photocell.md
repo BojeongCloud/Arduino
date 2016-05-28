@@ -5,8 +5,10 @@
 
 # Puzzle 03 - Photocell (조도센서)
 
-## 소스코드
+## 회로도
+![조도센서 아두이노 회로도](images/03_Photocell_schem.ps.png)
 
+## 소스코드
 아두이노는 컴퓨터(호스트) 사이에 시리얼 통신을 지원한다.  
 시리얼(직렬) 통신은 한 데이터 뭉치를 소량의 데이터로 나눠서 주고받는 통신 방법이고, 패러럴(병렬) 통신은 한 번에 대량의 데이터를 주고받는 통신 방법이다. 필자가 아는 한 아두이노는 패러럴 통신은 지원하지 않는다.
 
@@ -14,9 +16,9 @@
 
 ```
 int potpin = 0; //set analog interface #0 to connect photocell 
-int ledpin=13;int val = 0; //define variable val
-void setup() {    pinMode(ledpin, OUTPUT); //set digital interface #11 as output
-    Serial.begin(9600);//set baud rate as 9600}
+int ledpin = 13;int val    = 0;    //define variable val
+void setup() {    pinMode(ledpin, OUTPUT); //set digital interface #13 as output
+    Serial.begin(9600);      //set baud rate as 9600}
 void loop() {    val = analogRead(potpin); //read analog 
     Serial.println(val);    delay(10);//delay 0.01 s}
 ```
