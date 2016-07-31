@@ -57,6 +57,10 @@ long Distance(long time) {
 
 음속은 대략 340m/s( = 0.34mm/us ~= 2.9us/mm) 이므로 초음파 근접 센서로 측정한 시간(us)에 곱하고 편도거리(mm)를 구하기 위해 왕복거리에서 절반을 나누어 준다.
 
+## 시리얼 모니터 (콘솔)
+
+시리얼 모니터 창을 열기 위해서는 `도구 > 시리얼 모니터`를 찾아주면 된다.
+
 ## 참고
 [Instructables - Simple Arduino and HC-SR04 Example](http://www.instructables.com/id/Simple-Arduino-and-HC-SR04-Example/)
 
