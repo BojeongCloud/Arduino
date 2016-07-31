@@ -14,20 +14,38 @@
 
 ```
 const int TriggerPin = 8; // Trig pin 
-const int EchoPin    = 9; // Echo pin     long Duration   = 0;void setup() {    pinMode(TriggerPin, OUTPUT); // Trigger is an output pin
+const int EchoPin    = 9; // Echo pin
+     long Duration   = 0;
+
+void setup() {
+    pinMode(TriggerPin, OUTPUT); // Trigger is an output pin
     pinMode(EchoPin   , INPUT ); // Echo is an input pin
-    Serial.begin(9600);          // Serial Output}void loop() { 
+    Serial.begin(9600);          // Serial Output
+}
+
+void loop() { 
     digitalWrite(TriggerPin, LOW); 
     delayMicroseconds(2); 
     digitalWrite(TriggerPin, HIGH); // Trigger pin to HIGH
     delayMicroseconds(10);          // 10us high
-    digitalWrite(TriggerPin, LOW);  // Trigger pin to LOW     Duration = pulseIn(EchoPin, HIGH);     // Waits for the echo pin to get high    // returns the Duration in microseconds    long Distance_mm = Distance(Duration); // Use function to calculate the distance    Serial.print("Distance = "); // Output to serial
+    digitalWrite(TriggerPin, LOW);  // Trigger pin to LOW
+ 
+    Duration = pulseIn(EchoPin, HIGH);     // Waits for the echo pin to get high
+    // returns the Duration in microseconds
+    long Distance_mm = Distance(Duration); // Use function to calculate the distance
+
+    Serial.print("Distance = "); // Output to serial
     Serial.print(Distance_mm); 
     Serial.println(" mm"); 
-    delay(1000);                 // Wait to do next measurement}
+    delay(1000);                 // Wait to do next measurement
+}
 
-// 신호가 돌아오는데 걸리는 시간으로부터 물체와의 거리를 계산하는 함수long Distance(long time) {    // Calculates the Distance in mm    // ((time) * (Speed of sound)) / toward and backward of object) * 10
-        long DistanceCalc;                 // Calculation variable
+// 신호가 돌아오는데 걸리는 시간으로부터 물체와의 거리를 계산하는 함수
+long Distance(long time) {
+    // Calculates the Distance in mm
+    // ((time) * (Speed of sound)) / toward and backward of object) * 10
+    
+    long DistanceCalc;                 // Calculation variable
     DistanceCalc = ((time / 2.9) / 2); // Actual calculation in mm
     //DistanceCalc = time / 74 / 2;    // Actual calculation in inches
     return DistanceCalc;               // return calculated value 
@@ -43,3 +61,5 @@ const int EchoPin    = 9; // Echo pin     long Duration   = 0;void setup() {
 [Instructables - Simple Arduino and HC-SR04 Example](http://www.instructables.com/id/Simple-Arduino-and-HC-SR04-Example/)
 
 [pulseIn 함수 - Arduino Reference](https://www.arduino.cc/en/Reference/PulseIn)
+
+[HC-SR04 초음파 센서](http://blog.0xff.co.kr/21)

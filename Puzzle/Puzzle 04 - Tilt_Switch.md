@@ -11,6 +11,8 @@
 쇼트(Short)란?  
 [Closed, Open, and Short Circuits for Dummies](http://www.dummies.com/how-to/content/closed-open-and-short-circuits.html)
 
+> 아두이노는 특별히 언급하지 않으면 Pull-Up 저항을 사용해서 floating 상태를 HIGH으로 잡아준다.
+
 ![기울기 센서 원리](./images/04_Tilt_Switch_Mechanism.jpg)
 
 ## 회로도
@@ -24,11 +26,20 @@ int LED = 2;
 int tilt = 12; 
 
 void setup()
-{    pinMode(LED, OUTPUT); // set digital 2 for LED output    pinMode(tilt, INPUT); // set digital 12 for tilt sensing 
+{
+    pinMode(LED, OUTPUT); // set digital 2 for LED output
+    pinMode(tilt, INPUT); // set digital 12 for tilt sensing 
 }
-void loop(){ 
-    if (digitalRead(tilt) == HIGH)    {        digitalWrite(LED, HIGH); //light up led    } 
-    else//otherwise 
-    {        digitalWrite(LED, LOW); //turn off led 
-    }}
+
+void loop()
+{ 
+    if (digitalRead(tilt) == HIGH)
+    {
+        digitalWrite(LED, HIGH); //light up led
+    } 
+    else //otherwise 
+    {
+        digitalWrite(LED, LOW); //turn off led 
+    }
+}
 ```
