@@ -10,16 +10,24 @@
 ### 회로도
 키트 구성품 18번(74HC595 Shift Register)과 19번(한 자리 FND 소자)을 사용한다.
 
+![회로도](./images/06_74HC595_Shift_Register_schem.png.ps.png)
+
 #### 7 - Segment FND
 ![애노드와 캐소드 소자의 차이점]
 (http://cfile8.uf.tistory.com/image/191466494ED872E502BF8A)
 
 FND는 크게 두 가지 종류로 나눌 수 있는데,  
-우리가 사용하는 소자는 common-cathod type 이다.
+우리가 사용하는 소자는 우측의 common-cathod type 이다.
 
 #### 74HC595 Shift Register
 ![74HC595 - Serial to Parallel Shift Register]
 (./images/06_74HC595_Pinning.tiff)
+
+명확하게 이야기하자면 출력으로 사용하는 핀은 총 8개(`Q0` ~ `Q7`)이고 나머지 핀은 74HC595 쉬프트 레지스터를 제어하는데 사용한다.
+
+사실 레지스터는 여러 플립플롭(Flip-Flop)이 모여서 만들어진 소자로서 이 소자를 온전히 이해하기 위해서는 먼저 플립플롭에 대한 개념을 충분히 숙지해야 한다. 하지만 이 소자를 너무 자세하게 설명하는 것은 교육 목적에 맞지 않을 수 있기 때문에 한 가지만 기억하고 넘어가도록 하자. 플립플롭은 데이터를 저장하는데 사용되는 기본적인 소자로서 클럭(Clock) 신호의 상승엣지(Rising Edge) 또는 하강엣지(Falling Edge)가 나타나는 시점에 저장하고 있던 데이터를 조작할 수 있다.
+
+![Rising Edge and Falling Edge](http://www.ustudy.in/sites/default/files/cou10.gif)
 
 ![Pin Description](./images/06_74HC595_Pin_Description.tiff)
 
@@ -30,14 +38,16 @@ FND는 크게 두 가지 종류로 나눌 수 있는데,
 그리고 핀 배치도와 설명은 위 그림과 같다.
 
 
-##### `OE'` (Output Enable)  
+##### `OE'` (Output Enable, active low)  
 
 | 입력 | 설명      |
 | :--  | :--       |
 | LOW  | 출력 허용 |
 | HIGH | 출력 제한 |
 
-##### `MR'` (Master Reset)
+> 핀의 입력이 반전되어 들어가는 경우 active low라고 말한다.
+
+##### `MR'` (Master Reset, active low)
 
 | 입력 | 설명                        |
 | :--  | :--                         |
@@ -46,16 +56,21 @@ FND는 크게 두 가지 종류로 나눌 수 있는데,
 
 ##### `SHCP` (Shift Register Clock Input)
 
+디지털 회로는 클럭(Clock) 신호를 바탕으로 신호를 입력받거나 출력하는 기준 시점을 정한다. 따라서 `DS` 핀으로 인가된 입력을 Qn으로 보내기 위해서는 `SHCP` 핀으로 클럭 신호를 보내주어야 한다. `SHCP` 핀으로는 저장된 데이터를 이전 플립플롭에서 다음 플립플롭으로 전달하는 것을 제어할 수 있다. 상승 엣지(Rising Edge), 즉 신호가 LOW에서 HIGH으로 변할 때, `Q7`의 입력을 `Q7S`로, `Q6`의 입력을 `Q7`로, `Q5`의 입력을 `Q6`로,  ... , `Q0`의 입력을 `Q1`로, `DS` 핀의 입력을 `Q0`로 이동시킨다.
 
 ##### `STCP` (Storage Register Clock Input)
 
+`STCP` 핀은 각 플립플롭의 출력을 갱신하는데 사용한다. 74HC595를 일반적으로 쉬프트 레지스터라고 부르지만 엄밀하게 이야기하자면, 1개의 8비트 스토리지(Storage) 레지스터와 1개의 8비트 쉬프트 레지스터로 구성되어 있다. Qn에서 출력으로 볼 수 있는 것은 쉬프트 레지스터의 값이 아니라 스토리지 레지스터의 값이기 때문에, 여러 클럭(Clock) 신호로 쉬프트 시켜준 값을 출력 핀에서 읽기 위해서는 `STCP` 핀에 상승엣지 신호를 인가해서 시프트 레지스터의 값들이 스토리지 레지스터로 갱신될 수 있도록 해주어야 한다.
+
+`SHCP`핀과 `STCP` 핀을 제어하는 예시는 다음과 같다:  
+![74HC595 제어 예시](http://ba.protostack.com/2010/05/shift_register_10_med.jpg)
 
 ### 소스코드
 
 ```
-int latchPin = 11; 
-int clockPin = 12;
-int  dataPin = 10; 
+int latchPin = 11; // STCP에 인가되는 신호
+int clockPin = 12; // SHCP에 인가되는 신호
+int  dataPin = 10; // DS에 인가되는 신호
 
 // 좌측부터 DP, G, F ... B, Abyte dec_digits[] = {    0b00111111, 
     0b00000110, 
@@ -83,6 +98,19 @@ int  dataPin = 10;
         delay(300);    } 
 }
 ```
+
+> ```
+> shiftOut(dataPin, clockPin, bitOrder, value)
+> ```  
+> 위 함수는 1바이트(= 8비트)의 데이터를 쉬프트하는데 사용할 수 있는 함수이다.
+> 원래는 입력받는 8비트 데이터를 각 비트마다 쉬프트해준 다음 
+> 스토리지 레지스터로 내보내도록 코드를 작성해야 하지만, 
+> 위 함수가 이러한 귀찮은 작업들을 자동으로 처리해준다.
+> 
+> `bitOrder`로 입력될 수 있는 값 두 가지는 다음과 같다: MSBFIRST, LSBFIRST
+> 
+> MSB := Most Significant Bit  
+> LSB := Least Significant Bit
 
 ## 4자리 FND 제어
 
@@ -252,3 +280,7 @@ int d4 = 9;int d3 = 10;int d2 = 11;int d1 = 12;
     digitalWrite(f, HIGH); 
     digitalWrite(g, HIGH);}
 ```
+
+## 참고문헌
+
+[아두이노 - shiftOut()](https://www.arduino.cc/en/Reference/ShiftOut)
