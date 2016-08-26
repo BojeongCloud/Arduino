@@ -10,6 +10,8 @@
 ### 회로도
 키트 구성품 18번(74HC595 Shift Register)과 19번(한 자리 FND 소자)을 사용한다.
 
+> 저항 연결 안하면 FND 소자가 터질수도 있으니 조심하자.
+
 ![회로도](./images/06_74HC595_Shift_Register_schem.png.ps.png)
 
 #### 7 - Segment FND
@@ -112,26 +114,33 @@ int  dataPin = 10; // DS에 인가되는 신호
 > MSB := Most Significant Bit  
 > LSB := Least Significant Bit
 
-## 4자리 FND 제어
+## 네 자리 FND 제어
 
 ### 회로도
+
+
+> 한 자리 FND와 다르게 핀이 3개 더 있다. 그 이유는 다음 회로도를 보면 알 수 있다.
+
+![네 자리 FND 회로도](./images/06_4_Digit_FND_Pin_Layout.jpg)
 
 ### 소스코드
 
 다소 길다. 하지만 길기만 할 뿐, 전혀 이해하기 어렵지 않다.
 
+<!-- 아래 코드가 제대로 동작하는지 알아보고 나서 교육하도록 하자 -->
+
 ```
 //set the cathode interface 
 int a = 1;int b = 2;int c = 3;int d = 4;int e = 5;int f = 6;int g = 7;int p = 8;
 // set the anode interface 
-int d4 = 9;int d3 = 10;int d2 = 11;int d1 = 12; 
+int digit_4 = 9;int digit_3 = 10;int digit_2 = 11;int digit_1 = 12; 
 
-//set variablelong n = 0;int x = 100;int del = 55; 
+//set variablelong n = 0;int x = 100;int delay = 55; 
 
-//fine-tuning value for clockvoid setup() {    pinMode(d1, OUTPUT); 
-    pinMode(d2, OUTPUT); 
-    pinMode(d3, OUTPUT); 
-    pinMode(d4, OUTPUT); 
+//fine-tuning value for clockvoid setup() {    pinMode(digit_1, OUTPUT); 
+    pinMode(digit_2, OUTPUT); 
+    pinMode(digit_3, OUTPUT); 
+    pinMode(digit_4, OUTPUT); 
     pinMode(a, OUTPUT); 
     pinMode(b, OUTPUT); 
     pinMode(c, OUTPUT); 
@@ -141,29 +150,29 @@ int d4 = 9;int d3 = 10;int d2 = 11;int d1 = 12;
     pinMode(g, OUTPUT); 
     pinMode(p, OUTPUT);}
 void loop() {    clearLEDs();    pickDigit(1);    pickNumber((n / x / 1000) % 10); 
-    delayMicroseconds(del); 
+    delayMicroseconds(delay); 
     
     clearLEDs();    pickDigit(2);    dispDec();    pickNumber((n / x / 100) % 10); 
-    delayMicroseconds(del); 
+    delayMicroseconds(delay); 
     
     clearLEDs();    pickDigit(3);    pickNumber((n / x / 10) % 10); 
-    delayMicroseconds(del); 
+    delayMicroseconds(delay); 
     
     clearLEDs();    pickDigit(4);    pickNumber(n / x % 10); 
-    delayMicroseconds(del);
+    delayMicroseconds(delay);
         n++;    if (digitalRead(13) == HIGH) {        n = 0; 
     }
 }
 
-//define pickDigit(x),to open dx portvoid pickDigit(int x) {    digitalWrite(d1, HIGH); 
-    digitalWrite(d2, HIGH); 
-    digitalWrite(d3, HIGH);
-    digitalWrite(d4, HIGH); 
+//define pickDigit(x),to open dx portvoid pickDigit(int x) {    digitalWrite(digit_1, HIGH); 
+    digitalWrite(digit_2, HIGH); 
+    digitalWrite(digit_3, HIGH);
+    digitalWrite(digit_4, HIGH); 
     
-    switch (x) {        case 1:            digitalWrite(d1, LOW); 
-            break;        case 2:            digitalWrite(d2, LOW); 
-            break;        case 3:            digitalWrite(d3, LOW); 
-            break;        default:            digitalWrite(d4, LOW); 
+    switch (x) {        case 1:            digitalWrite(digit_1, LOW); 
+            break;        case 2:            digitalWrite(digit_2, LOW); 
+            break;        case 3:            digitalWrite(digit_2, LOW); 
+            break;        default:            digitalWrite(digit_3, LOW); 
             break;    } 
 }//define pickNumber(x)to display number xvoid pickNumber(int x) {    switch (x) { 
         default:            zero();            break; 
